@@ -102,6 +102,12 @@
       document.getElementById('page-title').textContent = `${item.date} ${item.weekday}`;
 
       const container = document.getElementById('detail-content');
+      
+      // 调试：确认页面已加载最新版本
+      console.log('detail.html version: 2026-07-07-v2');
+      console.log('item trends:', item.trends);
+      console.log('item sources:', item.sources);
+      
       container.innerHTML = `
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <div class="px-5 py-4 border-b border-gray-100 bg-gray-50">
