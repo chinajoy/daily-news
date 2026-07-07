@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>职教数智早报</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background-color: #f3f4f6;
+    }
+    .news-card {
+      transition: all 0.2s ease;
+    }
+    .news-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .tag-宏观经济 { background: #fef3c7; color: #92400e; }
+    .tag-科技 { background: #dbeafe; color: #1e40af; }
+    .tag-教育 { background: #dcfce7; color: #166534; }
+    .tag-行业 { background: #f3e8ff; color: #6b21a8; }
+    .tag-农业 { background: #ecfccb; color: #3f6212; }
+    .tag-交通 { background: #ccfbf1; color: #115e59; }
+    .tag-体育 { background: #fee2e2; color: #991b1b; }
+    .tag-default { background: #e5e7eb; color: #374151; }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- Header -->
+  <header class="bg-white shadow-sm sticky top-0 z-10">
+    <div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-bold text-gray-900">📰 职教数智早报</h1>
+        <p class="text-sm text-gray-500 mt-0.5" id="today-date"></p>
+      </div>
+      <div class="flex items-center gap-3">
+        <select id="date-filter" class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer">
+          <option value="all">全部日期</option>
+        </select>
+        <div class="text-sm text-gray-400" id="total-count"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-3xl mx-auto px-4 py-6">
+    <div id="news-list" class="space-y-4">
+      <!-- 卡片由 JS 插入 -->
+    </div>
+  </main>
+
+  <script src="data.js"></script>
+  <script>
+    function render(data, filterDate = 'all') {
+      const today = new Date();
+      document.getElementById('today-date').textContent = 
+        `${today.getFullYear()}年${String(today.getMonth()+1).padStart(2,'0')}月${String(today.getDate()).padStart(2,'0')}日`;
+
+      // 过滤数据
+      const filteredData = filterDate === 'all' ? data : data.filter(item => item.id === filterDate);
+      document.getElementById('total-count').textContent = filterDate === 'all' ? `共 ${data.length} 期` : `1 期`;
+
+      // 更新日期选择器选项
+      const select = document.getElementById('date-filter');
+      // 保留 "全部日期" 选项，重新生成其余选项
+      const currentValue = select.value;
+      select.innerHTML = '<option value="all">全部日期</option>';
+      data.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = `${item.date} ${item.weekday}`;
+        select.appendChild(option);
+      });
+      select.value = currentValue;
+
+      const container = document.getElementById('news-list');
+      if (filteredData.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-16 text-gray-400">
+            <p class="text-lg">暂无数据</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filteredData.map(item => {
+        const tags = [...new Set(item.items.map(i => i.tag))];
+        return `
+          <a href="detail.html?id=${item.id}" class="block news-card bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-lg font-bold text-gray-900">${item.date}</span>
+                <span class="text-sm text-gray-500">${item.weekday}</span>
+              </div>
+              <span class="text-sm text-gray-400">${item.items.length} 条</span>
+            </div>
+            <p class="text-gray-700 text-sm leading-relaxed mb-3">${item.summary}</p>
+            <div class="flex flex-wrap gap-1.5">
+              ${tags.map(t => `<span class="tag tag-${t} tag-default">${t}</span>`).join('')}
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    // 绑定日期选择器事件
+    document.getElementById('date-filter').addEventListener('change', function(e) {
+      if (typeof NEWS_DATA !== 'undefined') {
+        render(NEWS_DATA, e.target.value);
+      }
+    });
+
+    if (typeof NEWS_DATA !== 'undefined') {
+      render(NEWS_DATA);
+    } else {
+      document.getElementById('news-list').innerHTML = `
+        <div class="text-center py-16 text-gray-400">
+          <p class="text-lg">数据加载失败</p>
+          <p class="text-sm mt-2">请确认 data.js 文件存在且未被修改</p>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
