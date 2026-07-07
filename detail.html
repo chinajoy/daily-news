@@ -64,34 +64,19 @@
       const id = params.get('id');
 
       if (!id) {
-        document.getElementById('detail-content').innerHTML = `
-          <div class="text-center py-20 text-gray-400">
-            <p class="text-lg">缺少日期参数</p>
-            <a href="index.html" class="text-blue-600 text-sm mt-4 inline-block">返回列表</a>
-          </div>
-        `;
+        document.getElementById('detail-content').innerHTML = '\n          <div class="text-center py-20 text-gray-400">\n            <p class="text-lg">缺少日期参数</p>\n            <a href="index.html" class="text-blue-600 text-sm mt-4 inline-block">返回列表</a>\n          </div>\n        ';
         return;
       }
 
       if (typeof NEWS_DATA === 'undefined') {
-        document.getElementById('detail-content').innerHTML = `
-          <div class="text-center py-20 text-gray-400">
-            <p class="text-lg">数据加载失败</p>
-            <p class="text-sm mt-2">请确认 data.js 文件存在且未被修改</p>
-          </div>
-        `;
+        document.getElementById('detail-content').innerHTML = '\n          <div class="text-center py-20 text-gray-400">\n            <p class="text-lg">数据加载失败</p>\n            <p class="text-sm mt-2">请确认 data.js 文件存在且未被修改</p>\n          </div>\n        ';
         return;
       }
 
-      const item = NEWS_DATA.find(d => d.id === id);
+      const item = NEWS_DATA.find(function(d) { return d.id === id; });
 
       if (!item) {
-        document.getElementById('detail-content').innerHTML = `
-          <div class="text-center py-20 text-gray-400">
-            <p class="text-lg">未找到 ${id} 的早报数据</p>
-            <a href="index.html" class="text-blue-600 text-sm mt-4 inline-block">返回列表</a>
-          </div>
-        `;
+        document.getElementById('detail-content').innerHTML = '\n          <div class="text-center py-20 text-gray-400">\n            <p class="text-lg">未找到 ' + id + ' 的早报数据</p>\n            <a href="index.html" class="text-blue-600 text-sm mt-4 inline-block">返回列表</a>\n          </div>\n        ';
         return;
       }
 
@@ -99,78 +84,27 @@
     }
 
     function render(item) {
-      document.getElementById('page-title').textContent = `${item.date} ${item.weekday}`;
+      document.getElementById('page-title').textContent = item.date + ' ' + item.weekday;
 
-      const container = document.getElementById('detail-content');
-      
-      // 调试：确认页面已加载最新版本
-      console.log('detail.html version: 2026-07-07-v2');
-      console.log('item trends:', item.trends);
-      console.log('item sources:', item.sources);
-      
-      container.innerHTML = `
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div class="px-5 py-4 border-b border-gray-100 bg-gray-50">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <span class="text-xl font-bold text-gray-900">${item.date}</span>
-                <span class="text-sm text-gray-500">${item.weekday}</span>
-              </div>
-              <span class="text-sm text-gray-400">共 ${item.items.length} 条</span>
-            </div>
-          </div>
+      var newsList = '';
+      for (var i = 0; i < item.items.length; i++) {
+        var news = item.items[i];
+        newsList += '\n          <div class="news-item px-5 py-5">\n            <div class="flex items-start gap-3">\n              <div class="flex-shrink-0 mt-0.5">\n                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-xs font-bold text-gray-600">' + (i + 1) + '</span>\n              </div>\n              <div class="flex-1 min-w-0">\n                <div class="flex items-center gap-2 mb-2">\n                  <span class="tag tag-' + news.tag + ' tag-default">' + news.tag + '</span>\n                </div>\n                <h3 class="text-base font-semibold text-gray-900 leading-snug mb-2">' + news.title + '</h3>\n                <p class="text-sm text-gray-600 leading-relaxed">' + news.content + '</p>\n              </div>\n            </div>\n          </div>\n        ';
+      }
 
-          <div class="divide-y divide-gray-100">
-            ${item.items.map((news, idx) => `
-              <div class="news-item px-5 py-5">
-                <div class="flex items-start gap-3">
-                  <div class="flex-shrink-0 mt-0.5">
-                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-xs font-bold text-gray-600">${idx + 1}</span>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2 mb-2">
-                      <span class="tag tag-${news.tag} tag-default">${news.tag}</span>
-                    </div>
-                    <h3 class="text-base font-semibold text-gray-900 leading-snug mb-2">${news.title}</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">${news.content}</p>
-                  </div>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
+      var trendsSection = '';
+      if (item.trends) {
+        trendsSection = '\n        <div class="mt-4 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">\n          <div class="px-5 py-3 border-b border-gray-100 bg-gray-50">\n            <span class="text-sm font-semibold text-gray-900">📌 重点趋势</span>\n          </div>\n          <div class="px-5 py-4">\n            <p class="text-sm text-gray-600 leading-relaxed">' + item.trends + '</p>\n          </div>\n        </div>\n        ';
+      }
 
-      ${item.trends ? `
-        <div class="mt-4 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div class="px-5 py-3 border-b border-gray-100 bg-gray-50">
-            <span class="text-sm font-semibold text-gray-900">📌 重点趋势</span>
-          </div>
-          <div class="px-5 py-4">
-            <p class="text-sm text-gray-600 leading-relaxed whitespace-pre-line">${item.trends}</p>
-          </div>
-        </div>
-      ` : ''}
+      var sourcesSection = '';
+      if (item.sources) {
+        sourcesSection = '\n        <div class="mt-4 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">\n          <div class="px-5 py-3 border-b border-gray-100 bg-gray-50">\n            <span class="text-sm font-semibold text-gray-900">🔗 信息来源</span>\n          </div>\n          <div class="px-5 py-4">\n            <p class="text-sm text-gray-500 leading-relaxed">' + item.sources + '</p>\n          </div>\n        </div>\n        ';
+      }
 
-      ${item.sources ? `
-        <div class="mt-4 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div class="px-5 py-3 border-b border-gray-100 bg-gray-50">
-            <span class="text-sm font-semibold text-gray-900">🔗 信息来源</span>
-          </div>
-          <div class="px-5 py-4">
-            <p class="text-sm text-gray-500 leading-relaxed">${item.sources}</p>
-          </div>
-        </div>
-      ` : ''}
+      var html = '\n        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">\n          <div class="px-5 py-4 border-b border-gray-100 bg-gray-50">\n            <div class="flex items-center justify-between">\n              <div class="flex items-center gap-2">\n                <span class="text-xl font-bold text-gray-900">' + item.date + '</span>\n                <span class="text-sm text-gray-500">' + item.weekday + '</span>\n              </div>\n              <span class="text-sm text-gray-400">共 ' + item.items.length + ' 条</span>\n            </div>\n          </div>\n\n          <div class="divide-y divide-gray-100">\n            ' + newsList + '\n          </div>\n        </div>\n\n        ' + trendsSection + '\n\n        ' + sourcesSection + '\n\n        <div class="mt-6 text-center">\n          <a href="index.html" class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors">\n            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">\n              <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />\n            </svg>\n            返回列表\n          </a>\n        </div>\n      ';
 
-        <div class="mt-6 text-center">
-          <a href="index.html" class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            返回列表
-          </a>
-        </div>
-      `;
+      document.getElementById('detail-content').innerHTML = html;
     }
 
     loadDetail();
