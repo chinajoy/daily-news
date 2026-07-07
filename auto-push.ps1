@@ -1,0 +1,1 @@
+cd E:\aidesign\daily-news; git add .; git commit -m "auto: daily news update $(Get-Date -Format 'yyyy-MM-dd')" -q; $env:HTTP_PROXY='http://127.0.0.1:7897'; $env:HTTPS_PROXY='http://127.0.0.1:7897'; git push origin master -q
