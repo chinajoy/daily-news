@@ -32,6 +32,15 @@
       background: #fafafa;
     }
   </style>
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?62726a1c79a7cee6b64dfa00e865d3c8";
+      var s = document.getElementsByTagName("script")[0]; 
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 </head>
 <body class="min-h-screen">
   <!-- Header -->
@@ -81,6 +90,11 @@
       }
 
       render(item);
+
+      // 百度统计：记录单条早报浏览
+      if (typeof _hmt !== 'undefined') {
+        _hmt.push(['_trackEvent', '早报', '浏览', item.id]);
+      }
     }
 
     function render(item) {
@@ -109,5 +123,28 @@
 
     loadDetail();
   </script>
+
+  <!-- 不蒜子统计 -->
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  <!-- 统计入口 -->
+  <footer class="bg-white border-t border-gray-200 mt-8">
+    <div class="max-w-3xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-center space-x-4 text-sm text-gray-400">
+        <span class="flex items-center space-x-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          <span>总访问 <span id="busuanzi_value_site_pv">0</span></span>
+        </span>
+        <span>·</span>
+        <span class="flex items-center space-x-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>访客 <span id="busuanzi_value_site_uv">0</span></span>
+        </span>
+        <span>·</span>
+        <a href="https://tongji.baidu.com" target="_blank" class="text-gray-400 hover:text-gray-600 transition-colors">统计详情 →</a>
+      </div>
+    </div>
+  </footer>
+
 </body>
 </html>
